@@ -1,35 +1,37 @@
 pipeline{
-    agent any
-    
+ agent any
     stages{
-        stage("clone code "){
+        stage("code"){
             steps{
-               echo "cloning code" 
-              git url:"https://github.com/vikrammasurkar9/devops-twv-p1-django-notes-app.git",branch:"main"
+                echo "cloning code"
+               git url:"https://github.com/vikrammasurkar9/devops-twv-p1-django-notes-app.git",branch:"main"
             }
-              }
-         stage("Build"){
+        }
+        stage("Build"){
              steps{
-                echo"building code"
-                sh "docker build -t my-dotes-app ."
-            }
-              }
+            echo "Building Code"
+            sh "docker build -t my-notes-app ."
+             }
+        }
         stage("Push to Docker Hub"){
              steps{
-                echo "pushing image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh"docker tag my-dotes-app ${env.dockerHubUser}/my-dotes-app:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/my-dotes-app:latest"
-                }
+            echo "Pushing imege to docker hub"
+            withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
+               sh "docker tag my-notes-app ${env.dockerHubUser}/my-notes-app:v1"
+               sh "docker login -u ${env.dockerHubUser} -p ${dockerHubPass}"
+               sh "docker push ${env.dockerHubUser}/my-notes-app:v1"
+                
             }
-              }
-         stage("Deploy"){
+             }
+        }
+        stage("Deploy"){
              steps{
-                echo"deploying the container"
-                sh "docker-compose down && docker-compose up -d"
-            }
-              }
-      }
-        
+            echo "Deolpying the container"
+           
+            sh "docker-compose down && docker-compose up -d"
+             }
+        }
+    }
+
+
 }
