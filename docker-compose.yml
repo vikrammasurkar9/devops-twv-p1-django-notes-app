@@ -1,6 +1,6 @@
 version : "3.3"
 services :
   web :
-     image : vikram0911/my-dotes-app:latest
+     image : vikram0911/my-notes-app:v1
      ports :
          - "8000:8000"
